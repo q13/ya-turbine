@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "target": "ES6",
+    "module": "commonjs",
+    "allowSyntheticDefaultImports": true
+  },
+  "exclude": [
+    "node_modules",
+    ".history"
+  ],
+  "include": [
+    "./src/**/*"
+  ],
+  "typingOptions": {
+    "enableAutoDiscovery": true
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "env": {
+    "browser": true,
+    "node": true,
+    "es6": true
+  },
+  "parserOptions": {
+    "parser": "babel-eslint",
+    "ecmaVersion": 9,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "globalReturn": true,
+      "jsx": true
+    }
+  },
+  "extends": [
+    "standard",
+    "plugin:vue/essential"
+  ],
+  "globals": {
+    "$": true,
+    "jQuery": true,
+    "_": true,
+    "R": true,
+    "Vue": true,
+    "require": true,
+    "nw": true,
+    "process": true
+  },
+  "rules": {
+    "no-new": 0, // 可以直接使用new关键字
+    "semi": 0, //关闭分号约束
+    "prefer-promise-reject-errors": 0, // allow throw literal string
+    "standard/no-callback-literal": 0,
+    "space-before-function-paren": [
+      "error",
+      {
+        "anonymous": "always",
+        "named": "ignore", // 关闭命名函数名后空格
+        "asyncArrow": "always"
+      }
+    ]
+  }
+}
