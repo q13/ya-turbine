@@ -22,6 +22,7 @@ import {
 } from 'lodash';
 import PageTransition from './page-transition';
 import debugInit from './deps/debug';
+import errorCode from './deps/error-code';
 
 export default (options) => {
   const {
@@ -41,13 +42,21 @@ export default (options) => {
       // 设置全局引用
       setAppStore('store', store);
       setAppStore('data', window.__data__ || {});
-      const { appData, routerOptions = {} } = await hook.exe('prepare@app', { // prepare可能会用到store引用
+      const {
+        appData,
+        routerOptions = {},
+        errorCode: projectErrorCode = {} // Add error code insert
+      } = await hook.exe('prepare@app', { // prepare可能会用到store引用
         store
       });
       // 设置全局引用
       setAppStore('data', {
         ...getAppStore('data'),
-        ...appData
+        ...appData,
+        errorCode: { // Mix presets
+          ...errorCode,
+          ...projectErrorCode
+        }
       });
       // 设置vuex state存储
       store.commit('appDataChange', appData);

@@ -12,7 +12,6 @@ import {
 } from 'lodash';
 import hook from './hook';
 import clientStore from 'store';
-import errorCode from './error-code.js'; // 错误码映射
 
 /**
  * @constant
@@ -295,6 +294,7 @@ export const c2s = (() => {
      * 获取返回信息
      */
     const getResMessage = (header) => {
+      const errorCode = getAppData('errorCode');
       return errorCode[header.code] || header.message || '系统开小差了！';
     };
     const ajaxPromise = new Promise((resolve, reject) => {
