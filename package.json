@@ -22,7 +22,7 @@
   },
   "homepage": "https://github.com/q13/ya-turbine#readme",
   "dependencies": {
-    "axios": "^0.18.0",
+    "axios": "0.16.2",
     "raf": "^3.4.0",
     "store": "^2.0.12"
   },
