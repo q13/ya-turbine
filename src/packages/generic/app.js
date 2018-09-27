@@ -27,7 +27,8 @@ import errorCode from './deps/error-code';
 export default (options) => {
   const {
     initailStore = {}, // 初始化store configs
-    initailSitmap = [] // 初始化sitmap
+    initailSitmap = [], // 初始化sitmap
+    initailErrorCode = {}, // 初始化errorCode
   } = options
   return function (resolve) {
     create();
@@ -41,22 +42,24 @@ export default (options) => {
       const store = new Vuex.Store(initStore(initailStore));
       // 设置全局引用
       setAppStore('store', store);
-      setAppStore('data', window.__data__ || {});
+      const presetData = {
+        ...(window.__data__ || {}),
+        errorCode: { // Mix presets
+          ...errorCode,
+          ...initailErrorCode
+        }
+      };
+      setAppStore('data', presetData);
       const {
         appData,
-        routerOptions = {},
-        errorCode: projectErrorCode = {} // Add error code insert
+        routerOptions = {}
       } = await hook.exe('prepare@app', { // prepare可能会用到store引用
         store
       });
       // 设置全局引用
       setAppStore('data', {
-        ...getAppStore('data'),
-        ...appData,
-        errorCode: { // Mix presets
-          ...errorCode,
-          ...projectErrorCode
-        }
+        ...presetData, // reset again
+        ...appData
       });
       // 设置vuex state存储
       store.commit('appDataChange', appData);
