@@ -14,7 +14,6 @@ import {
 } from './deps/store';
 import hook from './deps/hook';
 import {
-  getAppStore,
   setAppStore
 } from './deps/utils';
 import {
@@ -28,7 +27,7 @@ export default (options) => {
   const {
     initailStore = {}, // 初始化store configs
     initailSitmap = [], // 初始化sitmap
-    initailErrorCode = {}, // 初始化errorCode
+    initailErrorCode = {} // 初始化errorCode
   } = options
   return function (resolve) {
     create();
