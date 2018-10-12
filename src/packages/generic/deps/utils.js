@@ -77,7 +77,8 @@ export const c2s = (() => {
     forceMock = false,
     autoTry = false,
     customCallback = false,
-    callbackCoverServer = false
+    callbackCoverServer = false,
+    proxyPointer = 0 // 指明采取哪一个proxy作为当前代理
   } = {}) => {
     const appMethods = getAppStore('methods');
     const alert = appMethods.alert; // 业务层存储alert引用
@@ -160,7 +161,7 @@ export const c2s = (() => {
         }, {});
       }
     });
-    const pathPrefixOnDebug = forceMock ? 'mock' : getProxyPrefix(); // 测试环境下的请求路径前缀
+    const pathPrefixOnDebug = forceMock ? 'mock' : getProxyPrefix(proxyPointer); // 测试环境下的请求路径前缀
     // 带有ignoreMock字段的接口不添加mock前缀 zhaoyao
     if (isDevelop() && !ajaxOptions.ignoreMock) {
       // 默认从rap上拉数据
@@ -378,32 +379,37 @@ export const c2s = (() => {
             };
           }
           const header = data.header;
-          if (isDevelop() && pathPrefixOnDebug !== 'mock') {
-            console.error('提示', '测试服务期接口返回500错误，尝试走本地mock服务重调一次');
-            c2s({
-              ...ajaxOptions,
-              url: originUrl
-            }, {
-              mask,
-              ajaxType,
-              withData,
-              autoApplyUrlPrefix,
-              silentError,
-              forceMock: true,
-              autoTry: true
-            }).then((response) => {
-              axiosResolveCallback({
-                data: response
-              });
-            });
-            if (!isSilent) {
-              if (alert) {
-                alert({
-                  message: getResMessage(header),
-                  iconType: 'error'
+          if (isDevelop()) {
+            if (pathPrefixOnDebug !== 'mock') {
+              console.error('提示', '测试服务期接口返回非200错误码，尝试走其它代理');
+              c2s({
+                ...ajaxOptions,
+                url: originUrl
+              }, {
+                mask,
+                ajaxType,
+                withData,
+                autoApplyUrlPrefix,
+                silentError,
+                // forceMock: true,
+                autoTry: true,
+                proxyPointer: proxyPointer + 1 // 切换到下一个proxy
+              }).then((response) => {
+                axiosResolveCallback({
+                  data: response
                 });
-              } else {
-                window.alert(getResMessage(header));
+              });
+            } else {
+              console.error('提示', 'Mock服务调用失败');
+              if (!isSilent) {
+                if (alert) {
+                  alert({
+                    message: getResMessage(header),
+                    iconType: 'error'
+                  });
+                } else {
+                  window.alert(getResMessage(header));
+                }
               }
             }
           } else {
@@ -728,9 +734,9 @@ export const isDevelop = function () {
  * 获取当前代理数据请求地址前缀
  * @return {String} ?proxy="返回值"
  */
-export const getProxyPrefix = function () {
+export const getProxyPrefix = function (proxyPointer = 0) {
   const prefix = getUrlQueryValue('proxy') || 'mock'; // 代理前缀
-  return prefix;
+  return prefix.split(',')[proxyPointer] || 'mock';
 };
 /**
  * 手动地址跳转
