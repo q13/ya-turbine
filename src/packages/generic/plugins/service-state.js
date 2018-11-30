@@ -10,7 +10,7 @@ import {
 
 var ServiceState = {};
 var stateStore = new Map();
-const SERVICE_KEY_PREFIX = 'service';
+const SERVICE_KEY_PREFIX = 'service_state';
 
 ServiceState.install = function (Vue) {
   Vue.mixin({
