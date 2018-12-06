@@ -3,9 +3,7 @@
  * 引入方式 import utils from '@/deps/utils';
  * @module utils
  */
-import {
-  Vue
-} from './env';
+import Vue from 'vue';
 import axios from 'axios';
 import {
   merge

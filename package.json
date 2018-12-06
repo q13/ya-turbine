@@ -1,6 +1,6 @@
 {
   "name": "ya-turbine",
-  "version": "0.0.1-alpha.8",
+  "version": "0.0.1-alpha.9",
   "description": "The ya framework bootstrap codebase",
   "main": "index.js",
   "scripts": {
