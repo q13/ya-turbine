@@ -106,14 +106,28 @@ export const c2s = (() => {
     // }
     // 可继承通过setAppData设置的入参
     let defaultRequestData = getAppData('$defaultRequestData');
+    let defaultRequestHeader = getAppData('$defaultRequestHeader');
     if (isFunction(defaultRequestData)) {
       defaultRequestData = defaultRequestData({
+        ...ajaxOptions
+      });
+    }
+    if (isFunction(defaultRequestHeader)) {
+      defaultRequestHeader = defaultRequestHeader({
         ...ajaxOptions
       });
     }
     if (!defaultRequestData) { // == false的情况
       defaultRequestData = {};
     }
+    if (!defaultRequestHeader) { // == false的情况
+      defaultRequestHeader = {};
+    }
+    // 设置自定义headers
+    ajaxOptions.headers = {
+      ...defaultRequestHeader,
+      ...(ajaxOptions.headers || {})
+    };
     let data = ajaxOptions.data || {
       header: null,
       body: {}
