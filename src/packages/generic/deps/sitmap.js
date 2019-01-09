@@ -445,8 +445,8 @@ async function extractNavs(records: any, all: any) {
       isCache: record.isCache,
       pageName: record.route.meta.pageName,
       text: record.navText,
-      navVisible: record.navVisible !== false,
-      breadcrumbVisible: record.breadcrumbVisible !== false,
+      navVisible: normalizeTrue(record.navVisible),
+      breadcrumbVisible: normalizeTrue(record.breadcrumbVisible),
       breadcrumbDisabled: !!record.breadcrumbDisabled,
       permission: record.permission,
       link: record.navLink || (record.route && (() => {
@@ -545,6 +545,17 @@ function getClearPaths(path) {
     }
   });
   return paths;
+}
+/**
+ * 标准化配置项开关，或者值为function（动态判定）或者值为boolean（静态判定）
+ * 默认为true
+ * @param {*} switcher - 配置项开关
+ */
+function normalizeTrue(switcher) {
+  if (Object.prototype.toString.call(switcher) === '[object Function]') {
+    return switcher;
+  }
+  return switcher !== false;
 }
 
 /**
